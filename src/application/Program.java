@@ -11,52 +11,50 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import entities.Product;
+
 public class Program {
 
 	public static void main(String[] args) {
 		Locale.setDefault(Locale.US);
 		Scanner sc = new Scanner(System.in);
-		List<String> list = new ArrayList<>();
-		
-		
+		List<Product> list = new ArrayList<>();
+
 		System.out.print("Enter file path: ");
 		String csv = sc.nextLine();
-			
-		
-		try(BufferedReader br = new BufferedReader(new FileReader(csv))){
+
+		try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
 			String line = br.readLine();
-			while(line != null) {
-				
-				double price = Double.valueOf(line.substring(line.indexOf(",") + 1,line.lastIndexOf(","))).doubleValue();
+			while (line != null) {
+
+				double price = Double.valueOf(line.substring(line.indexOf(",") + 1, line.lastIndexOf(",")))
+						.doubleValue();
 				int quant = Integer.valueOf(line.substring(line.lastIndexOf(",") + 1)).intValue();
-				double fp = price * quant;
-				String edtLine = line.substring(0,line.indexOf(",")+ 1); 
-				list.add(edtLine + String.format("%.2f", fp));
-				
-				line = br.readLine();	
+				String edtLine = line.substring(0, line.indexOf(",") + 1);
+				Product p = new Product(edtLine, price, quant);
+				list.add(p);
+				line = br.readLine();
 			}
-			 boolean success = new File(csv.substring(0, csv.lastIndexOf("\\")) + "\\out").mkdir();
+			String formatCsv = csv.substring(0, csv.lastIndexOf("\\"));
+			boolean success = new File(formatCsv + "\\out").mkdir();
 			System.out.println("Directory created successfully: " + success);
-			String outCsv = "C:\\temp\\out\\summary.csv";
-			
-			try(BufferedWriter bw = new BufferedWriter(new FileWriter(outCsv))){
-				
-				for(String l : list) {
-					bw.write(l);
+			String outCsv = "\\out\\summary.csv";
+
+			try (BufferedWriter bw = new BufferedWriter(new FileWriter(formatCsv + outCsv))) {
+
+				for (Product l : list) {
+					bw.write(l.toString());
 					bw.newLine();
 				}
-			}
-			catch(IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			
-		}
-		catch(IOException e) {
+			System.out.println("SUCCESS IN CREATING THE FILE");
+
+		} catch (IOException e) {
 			e.printStackTrace();
-		}
-		finally {
-			
+		} finally {
+
 			sc.close();
 		}
 

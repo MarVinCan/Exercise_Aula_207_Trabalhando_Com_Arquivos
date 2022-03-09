@@ -1,15 +1,14 @@
 package entities;
 
 public class Product {
-	
+
 	private String name;
 	private double price;
 	private int quantity;
-	
-	
+
 	public Product() {
 	}
-	
+
 	public Product(String name, double price, int quantity) {
 		this.name = name;
 		this.price = price;
@@ -39,7 +38,14 @@ public class Product {
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	
-	
+
+	private Double totalPrice() {
+		return price * quantity;
+	}
+
+	@Override
+	public String toString() {
+		return name + String.format(" %.2f", totalPrice());
+	}
 
 }
