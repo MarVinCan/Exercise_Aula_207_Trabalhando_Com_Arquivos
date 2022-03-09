@@ -22,24 +22,25 @@ public class Program {
 
 		System.out.print("Enter file path: ");
 		String csv = sc.nextLine();
-
+		
+		String formatCsv = csv.substring(0, csv.lastIndexOf("\\"));
+		boolean success = new File(formatCsv + "\\out").mkdir();
+		System.out.println("Directory created successfully: " + success);
+		String outCsv = "\\out\\summary.csv";
+		
 		try (BufferedReader br = new BufferedReader(new FileReader(csv))) {
 			String line = br.readLine();
 			while (line != null) {
-
-				double price = Double.valueOf(line.substring(line.indexOf(",") + 1, line.lastIndexOf(",")))
-						.doubleValue();
-				int quant = Integer.valueOf(line.substring(line.lastIndexOf(",") + 1)).intValue();
-				String edtLine = line.substring(0, line.indexOf(",") + 1);
+				
+				String[] parts = line.split(",");
+				String edtLine = parts[0];
+				double price = Double.parseDouble(parts[1]);
+				int quant = Integer.parseInt(parts[2]);
 				Product p = new Product(edtLine, price, quant);
 				list.add(p);
 				line = br.readLine();
 			}
-			String formatCsv = csv.substring(0, csv.lastIndexOf("\\"));
-			boolean success = new File(formatCsv + "\\out").mkdir();
-			System.out.println("Directory created successfully: " + success);
-			String outCsv = "\\out\\summary.csv";
-
+			
 			try (BufferedWriter bw = new BufferedWriter(new FileWriter(formatCsv + outCsv))) {
 
 				for (Product l : list) {
